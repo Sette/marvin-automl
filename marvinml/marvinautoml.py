@@ -1,4 +1,3 @@
-
 def tpot_classifier(**kwargs):
     from marvinml.backend.tpotbackend import TpotClassifierBackend
     return TpotClassifierBackend(**kwargs)
@@ -6,6 +5,10 @@ def tpot_classifier(**kwargs):
 def tpot_regressor(**kwargs):
     from marvinml.backend.tpotbackend import TpotRegressorBackend
     return TpotRegressorBackend(**kwargs)
+
+def h2o(**kwargs):
+    from marvinml.backend.h2obackend import H2OClassifierBackend
+    return H2OClassifierBackend(**kwargs)
 
 def autosk_classifier(**kwargs):
     from marvinml.backend.autoskbackend import AutoskClassifierBackend
@@ -17,13 +20,15 @@ def autosk_regressor(**kwargs):
 
 
 BACKENDS_CLASSIFIER = {
-    'autosk': tpot_classifier,
-    'tpot':tpot_regressor
+    'autosk': autosk_classifier,
+    'tpot': tpot_classifier,
+    'h2o': h2o
 }
 
 BACKENDS_REGRESSOR = {
-    'autosk': autosk_classifier,
-    'tpot':autosk_regressor
+    'autosk': autosk_regressor,
+    'tpot': tpot_regressor,
+    'h2o': h2o
 }
 
 

@@ -1,17 +1,16 @@
-
 from tpot import TPOTClassifier
 from tpot import TPOTRegressor
 
 from marvinml.backend.automl import MarvinAutomlClassifier, MarvinAutomlRegressor
 
 
-class TpotClassifierBackend(TPOTClassifier,MarvinAutomlClassifier):
+class TpotClassifierBackend(TPOTClassifier, MarvinAutomlClassifier):
 
-    def __init__(self, *args,**kwargs):
-        super(TpotClassifierBackend,self). __init__( *args,**kwargs)
+    def __init__(self, *args, **kwargs):
+        super(TpotClassifierBackend, self).__init__(*args, **kwargs)
 
 
-class TpotRegressorBackend(TPOTRegressor,MarvinAutomlClassifier):
+class TpotRegressorBackend(TPOTRegressor, MarvinAutomlRegressor):
 
-    def __init__(self, *args,**kwargs):
-        super(TpotRegressorBackend,self). __init__( *args,**kwargs)
+    def __init__(self, *args, **kwargs):
+        super(TpotRegressorBackend, self).__init__(*args, **kwargs)
