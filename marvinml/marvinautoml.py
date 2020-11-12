@@ -18,6 +18,9 @@ def autosk_regressor(**kwargs):
     from marvinml.backend.autoskbackend import AutoskRegressorBackend
     return AutoskRegressorBackend(**kwargs)
 
+def autoviz_eda(**kwargs):
+    from marvinml.backend.autovizbackend import AutoVizEDABackend
+    return AutoVizEDABackend(**kwargs)
 
 BACKENDS_CLASSIFIER = {
     'autosk': autosk_classifier,
@@ -31,6 +34,10 @@ BACKENDS_REGRESSOR = {
     'h2o': h2o
 }
 
+BACKENDS_EDA = {
+    'autoviz': autoviz_eda
+}
+
 
 def get_automl_classifier(backend,**kwargs):
     return BACKENDS_CLASSIFIER.get(backend)(**kwargs)
@@ -38,3 +45,6 @@ def get_automl_classifier(backend,**kwargs):
 
 def get_automl_regressor(backend,**kwargs):
     return BACKENDS_REGRESSOR.get(backend)(**kwargs)
+
+def get_auto_eda(backend,**kwargs):
+    return BACKENDS_EDA.get(backend)(**kwargs)

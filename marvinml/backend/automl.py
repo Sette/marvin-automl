@@ -1,14 +1,5 @@
 from abc import ABCMeta, abstractmethod
 
-class MarvinH2oAutoml(metaclass=ABCMeta):
-
-    @abstractmethod
-    def train(self):
-        pass
-
-    @abstractmethod
-    def predict(self):
-        pass
 
 class MarvinAutomlClassifier(metaclass=ABCMeta):
 
@@ -30,5 +21,11 @@ class MarvinAutomlRegressor(metaclass=ABCMeta):
     
     @abstractmethod
     def predict(self):
+        pass
+
+class MarvinAutoVizEDA(metaclass=ABCMeta):
+
+    @abstractmethod
+    def AutoViz(self):
         pass
 
