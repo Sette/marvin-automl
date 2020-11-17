@@ -11,8 +11,6 @@ class MarvinAutomlClassifier(metaclass=ABCMeta):
     def predict(self):
         pass
 
-    
-
 class MarvinAutomlRegressor(metaclass=ABCMeta):
 
     @abstractmethod
@@ -28,4 +26,3 @@ class MarvinAutoVizEDA(metaclass=ABCMeta):
     @abstractmethod
     def AutoViz(self):
         pass
-

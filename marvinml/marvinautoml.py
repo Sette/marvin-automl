@@ -42,7 +42,6 @@ BACKENDS_EDA = {
 def get_automl_classifier(backend,**kwargs):
     return BACKENDS_CLASSIFIER.get(backend)(**kwargs)
 
-
 def get_automl_regressor(backend,**kwargs):
     return BACKENDS_REGRESSOR.get(backend)(**kwargs)
 
