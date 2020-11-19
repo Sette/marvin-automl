@@ -7,5 +7,5 @@ class AutoVizEDABackend(AutoViz_Class, MarvinAutoVizEDA):
     def __init__(self, *args,**kwargs):
         super(AutoVizEDABackend, self).__init__(*args, **kwargs)
     
-    def fit(self, *args,**kwargs):
+    def show(self, *args,**kwargs):
         self.AutoViz(args[0])
