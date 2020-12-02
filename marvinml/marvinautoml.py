@@ -1,3 +1,5 @@
+import pandas as pd
+
 def tpot_classifier(**kwargs):
     from marvinml.backend.tpotbackend import TpotClassifierBackend
     return TpotClassifierBackend(**kwargs)
@@ -22,6 +24,18 @@ def autoviz_eda(**kwargs):
     from marvinml.backend.autovizbackend import AutoVizEDABackend
     return AutoVizEDABackend(**kwargs)
 
+def prep(**kwargs):
+    from marvinml.backend.datapreparation import preprocess
+    return preprocess(**kwargs)
+
+def trans(**kwargs):
+    from marvinml.backend.datapreparation import transform
+    return transform(**kwargs)
+
+def data_prep(**kwargs):
+    from marvinml.backend.datapreparation import data_preparation
+    return data_preparation(**kwargs)
+
 BACKENDS_CLASSIFIER = {
     'autosk': autosk_classifier,
     'tpot': tpot_classifier,
@@ -38,6 +52,11 @@ BACKENDS_EDA = {
     'autoviz': autoviz_eda
 }
 
+BACKENDS_DATA_PREP = {
+    'preprocess': prep,
+    'data_prep': data_prep,
+    'trans': trans
+}
 
 def get_automl_classifier(backend,**kwargs):
     return BACKENDS_CLASSIFIER.get(backend)(**kwargs)
@@ -47,3 +66,6 @@ def get_automl_regressor(backend,**kwargs):
 
 def get_auto_eda(backend,**kwargs):
     return BACKENDS_EDA.get(backend)(**kwargs)
+
+def get_data_preparation(backend, **kwargs):
+    return BACKENDS_DATA_PREP.get(backend)(**kwargs)
