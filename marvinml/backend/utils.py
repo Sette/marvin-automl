@@ -1,4 +1,4 @@
-from sklearn.preprocessing import MinMaxScaler, StandardScaler, Normalizer, LabelEncoder
+from sklearn.preprocessing import MinMaxScaler, StandardScaler, Normalizer
 from sklearn.preprocessing import OneHotEncoder
 from imblearn.over_sampling import RandomOverSampler
 from imblearn.under_sampling import RandomUnderSampler
@@ -12,7 +12,7 @@ import numpy as np
 def separate(data, target=None): 
     all_columns = list(data.columns)
     num_columns = data.select_dtypes(include=np.number).columns.tolist() 
-    cat_columns = list(set(all_columns)-set(num_columns)) 
+    cat_columns = [x for x in all_columns if not x in num_columns]   
     if target is not None:
         y_target = data[target] 
 
@@ -47,8 +47,9 @@ def one_hot_encoder(data, target):
     x = data.drop([target], axis=1)
     y = data[target]
     data = get_dummies(x)
+    col_list = data.columns.tolist()
     data = pd.concat([data, y], axis=1)
-    return data
+    return data, col_list
 
 #Apply Label Encoder
 def label_encoder(data, target=None):
@@ -66,6 +67,7 @@ def label_encoder(data, target=None):
             data = pd.concat([num, data], axis=1)
     else: 
         data = num
+        oe = None
     data = pd.concat([data, y_target], axis=1)
     return data, oe
 
@@ -83,8 +85,9 @@ def minmax(data, target):
             data = pd.concat([data, cat], axis=1) 
     else:
         data = cat
+        scaler = None
     data = pd.concat([data, y_target], axis=1)
-    return data
+    return data, scaler
 
 #Apply Standard Scaler
 def standard_scaler(data, target):
@@ -98,8 +101,9 @@ def standard_scaler(data, target):
             data = pd.concat([data, cat], axis=1) 
     else:
         data = cat
+        scaler = None
     data = pd.concat([data, y_target], axis=1)
-    return data
+    return data, scaler
 
 #Apply Normalizer Scaler
 def normalizer(data, target):
@@ -108,23 +112,26 @@ def normalizer(data, target):
         num, cat, y_target, num_columns, cat_columns = separate(data, target)
         if num is not None:
             num = num.reset_index(drop=True)
-            transformer = Normalizer().fit(num)
-            data = transformer.transform(num)
+            scaler = Normalizer().fit(num)
+            data = scaler.transform(num)
             data = pd.DataFrame(data, columns=num_columns)
             if cat is not None:
                 cat = cat.reset_index(drop=True)
                 data = pd.concat([data, cat], axis=1) 
+        else: 
+            data = cat
+            scaler = None
         data = pd.concat([data, y_target], axis=1)
-        return data
+        return data, scaler
     except OSError as err:
         print("OS error: {0}".format(err))
-        return data
+        return data, None
     except ValueError:
         print("Input contains NaN, infinity or a value too large for dtype('float64').")
-        return data
+        return data, None
     except:
         print("Unexpected error:", sys.exc_info()[0])
-        return data
+        return data, None
 
 ####### DATA IMPUTATION #######
 

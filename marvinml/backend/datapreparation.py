@@ -1,3 +1,4 @@
+from sklearn.preprocessing import MinMaxScaler, StandardScaler, Normalizer, OrdinalEncoder
 from marvinml.backend.utils import one_hot_encoder, label_encoder
 from marvinml.backend.utils import minmax, standard_scaler, normalizer
 from marvinml.backend.utils import imputation_mean, imputation_median, imputation_deletion_case
@@ -19,31 +20,19 @@ PIPELINE_OPTIONS = {
     'undersampling': undersampling,
 }
 
-def transform(dataframe, trans):
-    num, cat, y_target, num_columns, cat_columns = separate(dataframe)
-    if type(cat) is pd.Series:
-        cat = pd.DataFrame(cat, columns = cat_columns)
-    if cat is not None:
-        data = trans.transform(cat)
-        data = pd.DataFrame(data, columns = cat_columns)
-        if num is not None:
-            data = pd.concat([num, data], axis=1)
-    else: 
-        data = num
-    data = pd.concat([data, y_target], axis=1)
-    return data
-
 def preprocess(dataframe, pipeline, target, **kwargs):
-    transformer = None
+    transformer = []
     for stage in pipeline:
         if stage in PIPELINE_OPTIONS:
-            if stage is 'label_encoder':
+            if stage is 'label_encoder' or 'minmax' or 'standard_scaler' or 'one_hot_encoder' or 'normalizer':
                 print("Stage --> ", stage)
-                dataframe, transformer = PIPELINE_OPTIONS[stage](dataframe, target)
+                dataframe, trans = PIPELINE_OPTIONS[stage](dataframe, target)
+                transformer.append(trans)
             else:
                 print("Stage --> ", stage)
                 dataframe = PIPELINE_OPTIONS[stage](dataframe, target)
     return dataframe, transformer
+
 
 def data_preparation(dataframe, target, description=False, **kwargs):
     if(description):
@@ -111,13 +100,46 @@ def data_preparation(dataframe, target, description=False, **kwargs):
         pipeline = ['imputation_median', 'label_encoder']
         print('Applied techniques: ', pipeline, '\n')
         
-    transformer = None
+    transformer = []
     for stage in pipeline:
         if stage in PIPELINE_OPTIONS:
             if stage is 'label_encoder':
                 print("Stage --> ", stage)
-                dataframe, transformer = PIPELINE_OPTIONS[stage](dataframe, target)
+                dataframe, trans = PIPELINE_OPTIONS[stage](dataframe, target)
+                transformer.append(trans)
             else:
                 print("Stage --> ", stage)
                 dataframe = PIPELINE_OPTIONS[stage](dataframe, target)
     return dataframe, transformer
+
+
+def transform(dataframe, trans):
+    for i in range(len(trans)):
+        num, cat, y_target, num_columns, cat_columns = separate(dataframe)
+        if isinstance(trans[i], OrdinalEncoder):
+            if type(cat) is pd.Series:
+                cat = pd.DataFrame(cat, columns = cat_columns)
+            if cat is not None:
+                dataframe = trans[i].transform(cat)
+                dataframe = pd.DataFrame(dataframe, columns = cat_columns)
+                if num is not None:
+                    dataframe = pd.concat([num, dataframe], axis=1)
+            else: 
+                dataframe = num
+            dataframe = pd.concat([dataframe, y_target], axis=1)
+            
+        elif (isinstance(trans[i], MinMaxScaler)) or (isinstance(trans[i], StandardScaler)) or (isinstance(trans[i], Normalizer)):
+            if num is not None:
+                dataframe = trans[i].transform(num) 
+                dataframe = pd.DataFrame(dataframe, columns=num_columns) 
+                if cat is not None:
+                    dataframe = pd.concat([dataframe, cat], axis=1) 
+            else:
+                dataframe = cat
+            dataframe = pd.concat([dataframe, y_target], axis=1)
+            
+        elif (isinstance(trans[i], list)):
+            dataframe = pd.get_dummies(dataframe)
+            dataframe = dataframe.reindex(columns=trans[i]).fillna(0.00) 
+            
+    return dataframe
