@@ -24,7 +24,7 @@ def preprocess(dataframe, pipeline, target, **kwargs):
     transformer = []
     for stage in pipeline:
         if stage in PIPELINE_OPTIONS:
-            if stage is 'label_encoder' or 'minmax' or 'standard_scaler' or 'one_hot_encoder' or 'normalizer':
+            if ((stage is 'label_encoder') or (stage is 'minmax') or (stage is 'standard_scaler') or (stage is 'one_hot_encoder') or (stage is 'normalizer')):
                 print("Stage --> ", stage)
                 dataframe, trans = PIPELINE_OPTIONS[stage](dataframe, target)
                 transformer.append(trans)

@@ -1,5 +1,3 @@
-import pandas as pd
-
 def tpot_classifier(**kwargs):
     from marvinml.backend.tpotbackend import TpotClassifierBackend
     return TpotClassifierBackend(**kwargs)
